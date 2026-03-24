@@ -24,139 +24,155 @@ class PersonServiceTest {
     @InjectMocks
     private PersonService personService;
 
-    // ─── Helper ──────────────────────────────────────────────────────────────
+    // ─── Helper methods ───────────────────────────────────────────────────────
 
     private Person buildPerson(Long id) {
         return Person.builder()
                 .id(id)
-                .vorname("Hans")
-                .nachname("Muster")
+                .firstName("Hans")
+                .lastName("Muster")
                 .email("hans.muster@example.ch")
-                .geburtsdatum(LocalDate.of(1985, 3, 15))
-                .adresse("Hauptstrasse 1, 4001 Basel")
+                .birthDate(LocalDate.of(1985, 3, 15))
                 .build();
     }
 
-    // ─── allePersonen ────────────────────────────────────────────────────────
+    // ─── findAll ──────────────────────────────────────────────────────────────
 
     @Test
-    void allePersonen_gibtAllePersonenZurueck() {
-        List<Person> personen = List.of(buildPerson(1L), buildPerson(2L));
-        when(personRepository.findAll()).thenReturn(personen);
+    void findAll_returnsAllPersonsFromRepository() {
+        List<Person> persons = List.of(buildPerson(1L), buildPerson(2L));
+        when(personRepository.findAll()).thenReturn(persons);
 
-        List<Person> ergebnis = personService.allePersonen();
+        List<Person> result = personService.findAll();
 
-        assertThat(ergebnis).hasSize(2);
+        assertThat(result).hasSize(2);
         verify(personRepository).findAll();
     }
 
-    // ─── suchePersonen ───────────────────────────────────────────────────────
+    // ─── search ───────────────────────────────────────────────────────────────
 
     @Test
-    void suchePersonen_mitNull_delegiertAnAllePersonen() {
+    void search_withNullTerm_delegatesToFindAll() {
         when(personRepository.findAll()).thenReturn(List.of(buildPerson(1L)));
 
-        personService.suchePersonen(null);
+        personService.search(null);
 
         verify(personRepository).findAll();
-        verify(personRepository, never()).suchePersonen(any());
+        verify(personRepository, never()).searchPersons(any());
     }
 
     @Test
-    void suchePersonen_mitLeeremText_delegiertAnAllePersonen() {
+    void search_withBlankTerm_delegatesToFindAll() {
         when(personRepository.findAll()).thenReturn(List.of());
 
-        personService.suchePersonen("   ");
+        personService.search("   ");
 
         verify(personRepository).findAll();
-        verify(personRepository, never()).suchePersonen(any());
+        verify(personRepository, never()).searchPersons(any());
     }
 
     @Test
-    void suchePersonen_mitSuchbegriff_delegiertAnRepository() {
-        List<Person> treffer = List.of(buildPerson(1L));
-        when(personRepository.suchePersonen("Hans")).thenReturn(treffer);
+    void search_withTerm_delegatesToRepository() {
+        List<Person> matches = List.of(buildPerson(1L));
+        when(personRepository.searchPersons("Hans")).thenReturn(matches);
 
-        List<Person> ergebnis = personService.suchePersonen("Hans");
+        List<Person> result = personService.search("Hans");
 
-        assertThat(ergebnis).hasSize(1);
-        verify(personRepository).suchePersonen("Hans");
+        assertThat(result).hasSize(1);
+        verify(personRepository).searchPersons("Hans");
     }
 
-    // ─── findeById ───────────────────────────────────────────────────────────
+    @Test
+    void search_trimsTermBeforePassingToRepository() {
+        when(personRepository.searchPersons("Hans")).thenReturn(List.of());
+
+        personService.search("  Hans  ");
+
+        verify(personRepository).searchPersons("Hans");
+    }
+
+    // ─── findById ─────────────────────────────────────────────────────────────
 
     @Test
-    void findeById_mitGueltigerId_gibtPersonZurueck() {
+    void findById_withValidId_returnsPerson() {
         Person person = buildPerson(1L);
         when(personRepository.findById(1L)).thenReturn(Optional.of(person));
 
-        Optional<Person> ergebnis = personService.findeById(1L);
+        Optional<Person> result = personService.findById(1L);
 
-        assertThat(ergebnis).isPresent();
-        assertThat(ergebnis.get().getEmail()).isEqualTo("hans.muster@example.ch");
+        assertThat(result).isPresent();
+        assertThat(result.get().getEmail()).isEqualTo("hans.muster@example.ch");
     }
 
     @Test
-    void findeById_mitUnbekannterID_gibtLeerZurueck() {
+    void findById_withUnknownId_returnsEmpty() {
         when(personRepository.findById(99L)).thenReturn(Optional.empty());
 
-        Optional<Person> ergebnis = personService.findeById(99L);
+        Optional<Person> result = personService.findById(99L);
 
-        assertThat(ergebnis).isEmpty();
+        assertThat(result).isEmpty();
     }
 
-    // ─── speichern ───────────────────────────────────────────────────────────
+    // ─── save ─────────────────────────────────────────────────────────────────
 
     @Test
-    void speichern_delegiertAnRepository() {
+    void save_delegatesToRepositoryAndReturnsSavedPerson() {
         Person person = buildPerson(null);
-        Person gespeichert = buildPerson(1L);
-        when(personRepository.save(person)).thenReturn(gespeichert);
+        Person saved = buildPerson(1L);
+        when(personRepository.save(person)).thenReturn(saved);
 
-        Person ergebnis = personService.speichern(person);
+        Person result = personService.save(person);
 
-        assertThat(ergebnis.getId()).isEqualTo(1L);
+        assertThat(result.getId()).isEqualTo(1L);
         verify(personRepository).save(person);
     }
 
-    // ─── loeschen ────────────────────────────────────────────────────────────
+    // ─── delete ───────────────────────────────────────────────────────────────
 
     @Test
-    void loeschen_ruftDeleteByIdAuf() {
-        personService.loeschen(1L);
+    void delete_callsDeleteById() {
+        personService.delete(1L);
 
         verify(personRepository).deleteById(1L);
     }
 
-    // ─── emailExistiert ──────────────────────────────────────────────────────
+    // ─── emailExists ──────────────────────────────────────────────────────────
 
     @Test
-    void emailExistiert_wennVorhanden_gibtTrueZurueck() {
+    void emailExists_whenPresent_returnsTrue() {
         when(personRepository.existsByEmail("hans.muster@example.ch")).thenReturn(true);
 
-        assertThat(personService.emailExistiert("hans.muster@example.ch")).isTrue();
+        boolean result = personService.emailExists("hans.muster@example.ch");
+
+        assertThat(result).isTrue();
     }
 
     @Test
-    void emailExistiert_wennNichtVorhanden_gibtFalseZurueck() {
-        when(personRepository.existsByEmail("neu@example.ch")).thenReturn(false);
+    void emailExists_whenAbsent_returnsFalse() {
+        when(personRepository.existsByEmail("new@example.ch")).thenReturn(false);
 
-        assertThat(personService.emailExistiert("neu@example.ch")).isFalse();
+        boolean result = personService.emailExists("new@example.ch");
+
+        assertThat(result).isFalse();
     }
 
-    // ─── emailExistiertBeiAnderer ────────────────────────────────────────────
+    // ─── isEmailTakenByOthers ──────────────────────────────────────────────────
 
     @Test
-    void emailExistiertBeiAnderer_wennBereitsVergeben_gibtTrueZurueck() {
+    void isEmailTakenByOthers_whenOtherPersonHasSameEmail_returnsTrue() {
         when(personRepository.existsByEmailAndIdNot("hans.muster@example.ch", 2L)).thenReturn(true);
 
-        assertThat(personService.emailExistiertBeiAnderer("hans.muster@example.ch", 2L)).isTrue();
+        boolean result = personService.isEmailTakenByOthers("hans.muster@example.ch", 2L);
+
+        assertThat(result).isTrue();
     }
 
     @Test
-    void emailExistiertBeiAnderer_wennNichtVergeben_gibtFalseZurueck() {
+    void isEmailTakenByOthers_whenNoOtherPersonHasSameEmail_returnsFalse() {
         when(personRepository.existsByEmailAndIdNot("hans.muster@example.ch", 1L)).thenReturn(false);
 
-        assertThat(personService.emailExistiertBeiAnderer("hans.muster@example.ch", 1L)).isFalse();
+        boolean result = personService.isEmailTakenByOthers("hans.muster@example.ch", 1L);
+
+        assertThat(result).isFalse();
     }
 }

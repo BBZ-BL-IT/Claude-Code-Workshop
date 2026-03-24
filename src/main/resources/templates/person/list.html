@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de"
+      th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Personenliste</title>
+</head>
+<body>
+<th:block th:fragment="content">
+
+<div class="page-header">
+    <h1>Personen</h1>
+    <a th:href="@{/persons/new}" class="btn btn-primary">+ Neue Person</a>
+</div>
+
+<!-- Search form -->
+<div class="card">
+    <form th:action="@{/persons}" method="get" class="search-form">
+        <input type="text"
+               name="search"
+               th:value="${search}"
+               placeholder="Suche nach Name oder E-Mail…"
+               class="input"/>
+        <button type="submit" class="btn btn-secondary">🔍 Suchen</button>
+        <a th:if="${search != null and !#strings.isEmpty(search)}"
+           th:href="@{/persons}" class="btn btn-outline">✕ Zurücksetzen</a>
+    </form>
+</div>
+
+<!-- Result count -->
+<p class="result-count">
+    <span th:text="${persons.size()}">0</span> Person(en) gefunden
+    <span th:if="${search != null and !#strings.isEmpty(search)}">
+        für „<strong th:text="${search}"></strong>"
+    </span>
+</p>
+
+<!-- Table -->
+<div class="card table-card">
+    <table th:if="${!persons.isEmpty()}">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>E-Mail</th>
+            <th>Geburtsdatum</th>
+            <th>Adresse</th>
+            <th>Aktionen</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="person : ${persons}">
+            <td th:text="${person.id}">1</td>
+            <td>
+                <a th:href="@{/persons/{id}(id=${person.id})}"
+                   th:text="${person.firstName + ' ' + person.lastName}">Max Muster</a>
+            </td>
+            <td th:text="${person.email}">mail@example.ch</td>
+            <td th:text="${#temporals.format(person.birthDate, 'dd.MM.yyyy')}">01.01.1990</td>
+            <td th:with="adr=${firstAddresses[person.id]}">
+                <span th:if="${adr != null}"
+                      th:text="${adr.street + ' ' + adr.houseNumber + ', ' + adr.city}">Hauptstrasse 1, Basel</span>
+                <span th:if="${adr == null}" class="text-muted">–</span>
+            </td>
+            <td class="actions">
+                <a th:href="@{/persons/{id}(id=${person.id})}" class="btn btn-sm btn-outline">👁 Detail</a>
+                <a th:href="@{/persons/{id}/edit(id=${person.id})}" class="btn btn-sm btn-secondary">✏️ Bearbeiten</a>
+                <form th:action="@{/persons/{id}/delete(id=${person.id})}" method="post" style="display:inline"
+                      onsubmit="return confirm('Person wirklich löschen?')">
+                    <button type="submit" class="btn btn-sm btn-danger">🗑 Löschen</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${persons.isEmpty()}" class="empty-state">
+        <p>Keine Personen gefunden.</p>
+        <a th:href="@{/persons/new}" class="btn btn-primary">Erste Person erfassen</a>
+    </div>
+</div>
+
+</th:block>
+</body>
+</html>

@@ -8,10 +8,10 @@
 <th:block th:fragment="content">
 
 <div class="page-header">
-    <h1 th:text="${person.vorname + ' ' + person.nachname}">Max Muster</h1>
+    <h1 th:text="${person.firstName + ' ' + person.lastName}">Max Muster</h1>
     <div class="header-actions">
-        <a th:href="@{/personen/{id}/bearbeiten(id=${person.id})}" class="btn btn-secondary">✏️ Bearbeiten</a>
-        <a th:href="@{/personen}" class="btn btn-outline">← Zurück</a>
+        <a th:href="@{/persons/{id}/edit(id=${person.id})}" class="btn btn-secondary">✏️ Bearbeiten</a>
+        <a th:href="@{/persons}" class="btn btn-outline">← Zurück</a>
     </div>
 </div>
 
@@ -23,11 +23,11 @@
         </tr>
         <tr>
             <th>Vorname</th>
-            <td th:text="${person.vorname}">Max</td>
+            <td th:text="${person.firstName}">Max</td>
         </tr>
         <tr>
             <th>Nachname</th>
-            <td th:text="${person.nachname}">Muster</td>
+            <td th:text="${person.lastName}">Muster</td>
         </tr>
         <tr>
             <th>E-Mail</th>
@@ -37,22 +37,48 @@
         </tr>
         <tr>
             <th>Geburtsdatum</th>
-            <td th:text="${#temporals.format(person.geburtsdatum, 'dd. MMMM yyyy', new java.util.Locale('de'))}">
+            <td th:text="${#temporals.format(person.birthDate, 'dd. MMMM yyyy', new java.util.Locale('de'))}">
                 1. Januar 1990
             </td>
-        </tr>
-        <tr>
-            <th>Adresse</th>
-            <td th:text="${person.adresse != null ? person.adresse : '–'}">Strasse 1</td>
         </tr>
     </table>
 </div>
 
-<!-- Löschen -->
+<!-- Addresses -->
+<div class="card">
+    <div class="page-header" style="padding: 0 0 1rem 0;">
+        <h3 style="margin:0">📍 Adressen (<span th:text="${person.addresses.size()}">0</span>)</h3>
+        <a th:href="@{/persons/{id}/addresses(id=${person.id})}" class="btn btn-secondary">Adressen verwalten</a>
+    </div>
+    <div th:if="${person.addresses.isEmpty()}" class="empty-state" style="padding: 1rem 0;">
+        <p>Noch keine Adressen vorhanden.</p>
+        <a th:href="@{/persons/{id}/addresses/new(id=${person.id})}" class="btn btn-primary">Adresse hinzufügen</a>
+    </div>
+    <table th:if="${!person.addresses.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Strasse / Nr.</th>
+            <th>PLZ</th>
+            <th>Ort</th>
+            <th>Land</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="address : ${person.addresses}">
+            <td th:text="${address.street + ' ' + address.houseNumber}">Hauptstrasse 1</td>
+            <td th:text="${address.postalCode}">4001</td>
+            <td th:text="${address.city}">Basel</td>
+            <td th:text="${address.country}">Schweiz</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Delete -->
 <div class="danger-zone card">
     <h3>⚠️ Gefahrenzone</h3>
     <p>Diese Person und alle zugehörigen Daten werden unwiderruflich gelöscht.</p>
-    <form th:action="@{/personen/{id}/loeschen(id=${person.id})}" method="post"
+    <form th:action="@{/persons/{id}/delete(id=${person.id})}" method="post"
           onsubmit="return confirm('Person wirklich löschen?')">
         <button type="submit" class="btn btn-danger">🗑 Person löschen</button>
     </form>

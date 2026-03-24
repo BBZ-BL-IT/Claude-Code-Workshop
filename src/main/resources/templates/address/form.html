@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de"
+      th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title th:text="${title}">Adresse</title>
+</head>
+<body>
+<th:block th:fragment="content">
+
+<div class="page-header">
+    <h1 th:text="${title}">Adresse erfassen</h1>
+    <a th:href="@{/persons/{personId}/addresses(personId=${person.id})}" class="btn btn-outline">← Zurück zur Liste</a>
+</div>
+
+<p class="result-count">
+    Person:
+    <a th:href="@{/persons/{id}(id=${person.id})}"
+       th:text="${person.firstName + ' ' + person.lastName}">Max Muster</a>
+</p>
+
+<div class="card form-card">
+    <form th:action="${address.id != null
+                        ? '/persons/' + person.id + '/addresses/' + address.id + '/edit'
+                        : '/persons/' + person.id + '/addresses/new'}"
+          th:object="${address}"
+          method="post">
+
+        <div class="form-row">
+            <!-- Street -->
+            <div class="form-group" th:classappend="${#fields.hasErrors('street')} ? 'has-error'">
+                <label for="street">Strasse <span class="required">*</span></label>
+                <input type="text"
+                       id="street"
+                       th:field="*{street}"
+                       class="input"
+                       placeholder="z. B. Hauptstrasse"/>
+                <span th:if="${#fields.hasErrors('street')}"
+                      th:errors="*{street}"
+                      class="error-msg"></span>
+            </div>
+
+            <!-- House number -->
+            <div class="form-group" th:classappend="${#fields.hasErrors('houseNumber')} ? 'has-error'">
+                <label for="houseNumber">Hausnummer <span class="required">*</span></label>
+                <input type="text"
+                       id="houseNumber"
+                       th:field="*{houseNumber}"
+                       class="input"
+                       placeholder="z. B. 42"/>
+                <span th:if="${#fields.hasErrors('houseNumber')}"
+                      th:errors="*{houseNumber}"
+                      class="error-msg"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <!-- Postal code -->
+            <div class="form-group" th:classappend="${#fields.hasErrors('postalCode')} ? 'has-error'">
+                <label for="postalCode">Postleitzahl <span class="required">*</span></label>
+                <input type="text"
+                       id="postalCode"
+                       th:field="*{postalCode}"
+                       class="input"
+                       placeholder="z. B. 4001"/>
+                <span th:if="${#fields.hasErrors('postalCode')}"
+                      th:errors="*{postalCode}"
+                      class="error-msg"></span>
+            </div>
+
+            <!-- City -->
+            <div class="form-group" th:classappend="${#fields.hasErrors('city')} ? 'has-error'">
+                <label for="city">Ort <span class="required">*</span></label>
+                <input type="text"
+                       id="city"
+                       th:field="*{city}"
+                       class="input"
+                       placeholder="z. B. Basel"/>
+                <span th:if="${#fields.hasErrors('city')}"
+                      th:errors="*{city}"
+                      class="error-msg"></span>
+            </div>
+        </div>
+
+        <!-- Country -->
+        <div class="form-group" th:classappend="${#fields.hasErrors('country')} ? 'has-error'">
+            <label for="country">Land <span class="required">*</span></label>
+            <input type="text"
+                   id="country"
+                   th:field="*{country}"
+                   class="input"
+                   placeholder="z. B. Schweiz"/>
+            <span th:if="${#fields.hasErrors('country')}"
+                  th:errors="*{country}"
+                  class="error-msg"></span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <span th:text="${address.id != null ? '💾 Speichern' : '➕ Erstellen'}">Speichern</span>
+            </button>
+            <a th:href="@{/persons/{personId}/addresses(personId=${person.id})}" class="btn btn-outline">Abbrechen</a>
+        </div>
+
+    </form>
+</div>
+
+</th:block>
+</body>
+</html>

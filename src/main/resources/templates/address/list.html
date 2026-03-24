@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de"
+      th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Adressen</title>
+</head>
+<body>
+<th:block th:fragment="content">
+
+<div class="page-header">
+    <h1>
+        Adressen von
+        <a th:href="@{/persons/{id}(id=${person.id})}"
+           th:text="${person.firstName + ' ' + person.lastName}">Max Muster</a>
+    </h1>
+    <div class="header-actions">
+        <a th:href="@{/persons/{personId}/addresses/new(personId=${person.id})}"
+           class="btn btn-primary">+ Neue Adresse</a>
+        <a th:href="@{/persons/{id}(id=${person.id})}" class="btn btn-outline">← Zurück zur Person</a>
+    </div>
+</div>
+
+<!-- Result count -->
+<p class="result-count">
+    <span th:text="${addresses.size()}">0</span> Adresse(n) gefunden
+</p>
+
+<!-- Table -->
+<div class="card table-card">
+    <table th:if="${!addresses.isEmpty()}">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Strasse / Nr.</th>
+            <th>PLZ</th>
+            <th>Ort</th>
+            <th>Land</th>
+            <th>Aktionen</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="address : ${addresses}">
+            <td th:text="${address.id}">1</td>
+            <td th:text="${address.street + ' ' + address.houseNumber}">Hauptstrasse 1</td>
+            <td th:text="${address.postalCode}">4001</td>
+            <td th:text="${address.city}">Basel</td>
+            <td th:text="${address.country}">Schweiz</td>
+            <td class="actions">
+                <a th:href="@{/persons/{personId}/addresses/{id}(personId=${person.id},id=${address.id})}"
+                   class="btn btn-sm btn-outline">👁 Detail</a>
+                <a th:href="@{/persons/{personId}/addresses/{id}/edit(personId=${person.id},id=${address.id})}"
+                   class="btn btn-sm btn-secondary">✏️ Bearbeiten</a>
+                <form th:action="@{/persons/{personId}/addresses/{id}/delete(personId=${person.id},id=${address.id})}"
+                      method="post" style="display:inline"
+                      onsubmit="return confirm('Adresse wirklich löschen?')">
+                    <button type="submit" class="btn btn-sm btn-danger">🗑 Löschen</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${addresses.isEmpty()}" class="empty-state">
+        <p>Keine Adressen vorhanden.</p>
+        <a th:href="@{/persons/{personId}/addresses/new(personId=${person.id})}"
+           class="btn btn-primary">Erste Adresse erfassen</a>
+    </div>
+</div>
+
+</th:block>
+</body>
+</html>

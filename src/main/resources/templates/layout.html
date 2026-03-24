@@ -10,16 +10,16 @@
 
 <header>
     <nav>
-        <a th:href="@{/personen}" class="nav-brand">👤 Personenverwaltung</a>
+        <a th:href="@{/persons}" class="nav-brand">👤 Personenverwaltung</a>
     </nav>
 </header>
 
 <main>
-    <!-- Flash-Meldungen -->
-    <div th:if="${erfolgMeldung}" class="alert alert-success" th:text="${erfolgMeldung}"></div>
-    <div th:if="${fehlerMeldung}" class="alert alert-error" th:text="${fehlerMeldung}"></div>
+    <!-- Flash messages -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
 
-    <!-- Seiteninhalt -->
+    <!-- Page content -->
     <th:block th:replace="${content}"/>
 </main>
 

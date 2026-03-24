@@ -12,10 +12,10 @@ import java.util.List;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Query("SELECT p FROM Person p WHERE " +
-           "LOWER(p.vorname) LIKE LOWER(CONCAT('%', :suchbegriff, '%')) OR " +
-           "LOWER(p.nachname) LIKE LOWER(CONCAT('%', :suchbegriff, '%')) OR " +
-           "LOWER(p.email) LIKE LOWER(CONCAT('%', :suchbegriff, '%'))")
-    List<Person> suchePersonen(@Param("suchbegriff") String suchbegriff);
+           "LOWER(p.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(p.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(p.email) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<Person> searchPersons(@Param("searchTerm") String searchTerm);
 
     boolean existsByEmail(String email);
 

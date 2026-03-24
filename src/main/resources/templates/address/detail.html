@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de"
+      th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Adresse Detail</title>
+</head>
+<body>
+<th:block th:fragment="content">
+
+<div class="page-header">
+    <h1 th:text="${address.street + ' ' + address.houseNumber + ', ' + address.city}">Hauptstrasse 1, Basel</h1>
+    <div class="header-actions">
+        <a th:href="@{/persons/{personId}/addresses/{id}/edit(personId=${person.id},id=${address.id})}"
+           class="btn btn-secondary">✏️ Bearbeiten</a>
+        <a th:href="@{/persons/{personId}/addresses(personId=${person.id})}" class="btn btn-outline">← Zurück</a>
+    </div>
+</div>
+
+<div class="card detail-card">
+    <table class="detail-table">
+        <tr>
+            <th>ID</th>
+            <td th:text="${address.id}">1</td>
+        </tr>
+        <tr>
+            <th>Strasse</th>
+            <td th:text="${address.street}">Hauptstrasse</td>
+        </tr>
+        <tr>
+            <th>Hausnummer</th>
+            <td th:text="${address.houseNumber}">1</td>
+        </tr>
+        <tr>
+            <th>Postleitzahl</th>
+            <td th:text="${address.postalCode}">4001</td>
+        </tr>
+        <tr>
+            <th>Ort</th>
+            <td th:text="${address.city}">Basel</td>
+        </tr>
+        <tr>
+            <th>Land</th>
+            <td th:text="${address.country}">Schweiz</td>
+        </tr>
+        <tr>
+            <th>Person</th>
+            <td>
+                <a th:href="@{/persons/{id}(id=${person.id})}"
+                   th:text="${person.firstName + ' ' + person.lastName}">Max Muster</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Delete -->
+<div class="danger-zone card">
+    <h3>⚠️ Gefahrenzone</h3>
+    <p>Diese Adresse wird unwiderruflich gelöscht.</p>
+    <form th:action="@{/persons/{personId}/addresses/{id}/delete(personId=${person.id},id=${address.id})}"
+          method="post"
+          onsubmit="return confirm('Adresse wirklich löschen?')">
+        <button type="submit" class="btn btn-danger">🗑 Adresse löschen</button>
+    </form>
+</div>
+
+</th:block>
+</body>
+</html>

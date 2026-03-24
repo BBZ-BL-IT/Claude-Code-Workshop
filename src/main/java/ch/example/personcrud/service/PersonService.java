@@ -17,36 +17,36 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     @Transactional(readOnly = true)
-    public List<Person> allePersonen() {
+    public List<Person> findAll() {
         return personRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public List<Person> suchePersonen(String suchbegriff) {
-        if (suchbegriff == null || suchbegriff.isBlank()) {
-            return allePersonen();
+    public List<Person> search(String searchTerm) {
+        if (searchTerm == null || searchTerm.isBlank()) {
+            return findAll();
         }
-        return personRepository.suchePersonen(suchbegriff.trim());
+        return personRepository.searchPersons(searchTerm.trim());
     }
 
     @Transactional(readOnly = true)
-    public Optional<Person> findeById(Long id) {
+    public Optional<Person> findById(Long id) {
         return personRepository.findById(id);
     }
 
-    public Person speichern(Person person) {
+    public Person save(Person person) {
         return personRepository.save(person);
     }
 
-    public void loeschen(Long id) {
+    public void delete(Long id) {
         personRepository.deleteById(id);
     }
 
-    public boolean emailExistiert(String email) {
+    public boolean emailExists(String email) {
         return personRepository.existsByEmail(email);
     }
 
-    public boolean emailExistiertBeiAnderer(String email, Long id) {
+    public boolean isEmailTakenByOthers(String email, Long id) {
         return personRepository.existsByEmailAndIdNot(email, id);
     }
 }

@@ -1,6 +1,8 @@
 package ch.example.personcrud;
 
+import ch.example.personcrud.model.Address;
 import ch.example.personcrud.model.Person;
+import ch.example.personcrud.repository.AddressRepository;
 import ch.example.personcrud.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,39 +18,58 @@ import java.util.List;
 public class DataInitializer implements CommandLineRunner {
 
     private final PersonRepository personRepository;
+    private final AddressRepository addressRepository;
 
     @Override
     public void run(String... args) {
         if (personRepository.count() > 0) return;
 
-        List<Person> beispielPersonen = List.of(
+        List<Person> samplePersons = List.of(
             Person.builder()
-                .vorname("Hans").nachname("Muster")
+                .firstName("Hans").lastName("Muster")
                 .email("hans.muster@example.ch")
-                .geburtsdatum(LocalDate.of(1985, 3, 15))
-                .adresse("Hauptstrasse 1, 4001 Basel")
+                .birthDate(LocalDate.of(1985, 3, 15))
                 .build(),
             Person.builder()
-                .vorname("Anna").nachname("Müller")
+                .firstName("Anna").lastName("Müller")
                 .email("anna.mueller@example.ch")
-                .geburtsdatum(LocalDate.of(1992, 7, 22))
-                .adresse("Bahnhofstrasse 42, 8001 Zürich")
+                .birthDate(LocalDate.of(1992, 7, 22))
                 .build(),
             Person.builder()
-                .vorname("Peter").nachname("Schmid")
+                .firstName("Peter").lastName("Schmid")
                 .email("peter.schmid@example.ch")
-                .geburtsdatum(LocalDate.of(1978, 11, 5))
-                .adresse("Marktgasse 7, 3011 Bern")
+                .birthDate(LocalDate.of(1978, 11, 5))
                 .build(),
             Person.builder()
-                .vorname("Laura").nachname("Keller")
+                .firstName("Laura").lastName("Keller")
                 .email("laura.keller@example.ch")
-                .geburtsdatum(LocalDate.of(2000, 1, 30))
-                .adresse(null)
+                .birthDate(LocalDate.of(2000, 1, 30))
                 .build()
         );
 
-        personRepository.saveAll(beispielPersonen);
-        log.info("✅ {} Beispiel-Personen gespeichert.", beispielPersonen.size());
+        List<Person> savedPersons = personRepository.saveAll(samplePersons);
+        log.info("✅ {} sample persons saved.", savedPersons.size());
+
+        List<Address> sampleAddresses = List.of(
+            Address.builder()
+                .street("Hauptstrasse").houseNumber("1")
+                .postalCode("4001").city("Basel").country("Schweiz")
+                .person(savedPersons.get(0)).build(),
+            Address.builder()
+                .street("Riehenstrasse").houseNumber("10")
+                .postalCode("4058").city("Basel").country("Schweiz")
+                .person(savedPersons.get(0)).build(),
+            Address.builder()
+                .street("Bahnhofstrasse").houseNumber("42")
+                .postalCode("8001").city("Zürich").country("Schweiz")
+                .person(savedPersons.get(1)).build(),
+            Address.builder()
+                .street("Marktgasse").houseNumber("7")
+                .postalCode("3011").city("Bern").country("Schweiz")
+                .person(savedPersons.get(2)).build()
+        );
+
+        addressRepository.saveAll(sampleAddresses);
+        log.info("✅ {} sample addresses saved.", sampleAddresses.size());
     }
 }
