@@ -1,50 +1,71 @@
-# 📖 Reference: Skills
+# 📖 Reference: Hooks
 
-> **Branch:** `reference/skills`  
+> **Branch:** `reference/hooks`  
 > Dies ist eine **Musterlösung** — nicht in deinen `main` mergen!
 
 ---
 
 ## Was wurde hinzugefügt?
 
-| Datei/Ordner | Zweck |
-|--------------|-------|
-| `.claude/skills/entity-scaffold/SKILL.md` | Skill zum Generieren einer kompletten CRUD-Entity |
-| `src/.../model/Address.java` | Generierte Entity (Ergebnis des Skills) |
-| `src/.../repository/AddressRepository.java` | Generiertes Repository |
-| `src/.../service/AddressService.java` | Generierter Service |
-| `src/.../controller/AddressController.java` | Generierter Controller |
-| `src/.../templates/address/*.html` | Generierte Templates (list, form, detail) |
-| Aktualisierter `DataInitializer.java` | + Beispiel-Adressen |
-| Aktualisierte `layout.html` | + Navigation zu Adressen |
+| Datei | Zweck |
+|-------|-------|
+| `.claude/hooks/protect-config.sh` | Shell-Skript, das Config-Dateien vor Änderungen schützt |
+| `.claude/settings.json` | Registrierung des Hooks als PreToolUse |
 
 ---
 
-## Der Entity-Scaffold Skill
+## Wie funktioniert der Hook?
 
-Dieser Skill wurde verwendet, um die Address-Entity zu generieren. Der wichtigste Aspekt ist **Step 1: Bestehenden Code lesen** — Claude lernt den Code-Stil, bevor neuer Code generiert wird.
+### Ablauf
 
-### Warum "Bestehenden Code lesen"?
+```
+Claude will application.properties ändern
+  → PreToolUse-Hook wird ausgelöst
+    → protect-config.sh prüft den Dateinamen
+      → "application.properties" erkannt → exit 2 (BLOCKIERT)
+      → Andere Datei → exit 0 (ERLAUBT)
+```
 
-Ohne diesen Schritt generiert Claude generischen Spring Boot Code. Mit diesem Schritt:
-- Naming-Konventionen werden eingehalten
-- URL-Patterns sind konsistent
-- Flash-Message-Variablen heissen gleich
-- Template-Strukturen sind identisch aufgebaut
+### Exit-Codes
+
+| Code | Bedeutung |
+|------|-----------|
+| `exit 0` | Aktion erlauben |
+| `exit 1` | Fehler im Hook selbst — Aktion wird trotzdem erlaubt |
+| `exit 2` | Aktion **blockieren** — Claude sieht die Fehlermeldung |
+
+### Hook registrieren (`.claude/settings.json`)
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/protect-config.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
 ---
 
-## Beispiel-Aufruf
+## Testen
+
+Starte Claude Code und versuche:
 
 ```
-Erstelle eine neue Entity "Address" mit den Feldern:
-- street (String, required, max 100)
-- houseNumber (String, required, max 10)
-- postalCode (String, required, max 10)
-- city (String, required, max 100)
-- country (String, required, max 50)
-Beziehung: Eine Person hat viele Addresses (@OneToMany)
+Ändere den Port in application.properties auf 9090
 ```
+
+Claude sollte die Blockierung sehen und die Fehlermeldung anzeigen.
 
 ---
 
