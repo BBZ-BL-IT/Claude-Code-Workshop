@@ -1,71 +1,53 @@
-# 📖 Reference: Hooks
+# 📖 Reference: Endergebnis
 
-> **Branch:** `reference/hooks`  
-> Dies ist eine **Musterlösung** — nicht in deinen `main` mergen!
-
----
-
-## Was wurde hinzugefügt?
-
-| Datei | Zweck |
-|-------|-------|
-| `.claude/hooks/protect-config.sh` | Shell-Skript, das Config-Dateien vor Änderungen schützt |
-| `.claude/settings.json` | Registrierung des Hooks als PreToolUse |
+> **Branch:** `reference/final`  
+> Dies ist das **komplette Endergebnis** nach allen Workshop-Blöcken.
 
 ---
 
-## Wie funktioniert der Hook?
+## Was ist hier anders als auf `main`?
 
-### Ablauf
+### Claude Code Integration
+- ✅ `CLAUDE.md` + `requirements.md` inkl. Testing-Regeln (Block 1)
+- ✅ `PersonServiceTest` + `AddressServiceTest` (Block 1)
+- ✅ 2 Subagents: Code-Erklärer + Code-Reviewer (Block 2)
+- ✅ Entity-Scaffold Skill (Block 3)
+- ✅ Config-Protection Hook (Block 4)
+
+### Code-Änderungen (durch den Entity-Scaffold Skill generiert)
+- ✅ Feldnamen auf Englisch (`firstName` statt `vorname`, etc.)
+- ✅ Template-Namen auf Englisch (`list.html` statt `liste.html`, etc.)
+- ✅ Neue Entity `Address` mit `@OneToMany`-Beziehung zu `Person`
+- ✅ Kompletter CRUD für Address (Controller, Service, Repository, Templates)
+- ✅ Unit-Tests für `PersonService` und `AddressService`
+
+### Ordnerstruktur
 
 ```
-Claude will application.properties ändern
-  → PreToolUse-Hook wird ausgelöst
-    → protect-config.sh prüft den Dateinamen
-      → "application.properties" erkannt → exit 2 (BLOCKIERT)
-      → Andere Datei → exit 0 (ERLAUBT)
-```
-
-### Exit-Codes
-
-| Code | Bedeutung |
-|------|-----------|
-| `exit 0` | Aktion erlauben |
-| `exit 1` | Fehler im Hook selbst — Aktion wird trotzdem erlaubt |
-| `exit 2` | Aktion **blockieren** — Claude sieht die Fehlermeldung |
-
-### Hook registrieren (`.claude/settings.json`)
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/protect-config.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ]
-  }
-}
+.claude/
+├── agents/
+│   ├── code-erklaerer-efz.md
+│   └── spring-mvc-code-reviewer.md
+├── hooks/
+│   └── protect-config.sh
+├── settings.json
+├── settings.local.json
+└── skills/
+    └── entity-scaffold/
+        └── SKILL.md
 ```
 
 ---
 
-## Testen
+## Vergleich: Vorher → Nachher
 
-Starte Claude Code und versuche:
-
-```
-Ändere den Port in application.properties auf 9090
-```
-
-Claude sollte die Blockierung sehen und die Fehlermeldung anzeigen.
+| Aspekt | `main` (vorher) | `reference/final` (nachher) |
+|--------|------------------|------------------------------|
+| Entities | Person | Person + Address |
+| Feldnamen | Deutsch (`vorname`) | Englisch (`firstName`) |
+| Templates | `liste.html`, `formular.html` | `list.html`, `form.html` |
+| Tests | Keine | PersonServiceTest, AddressServiceTest |
+| Claude-Integration | Keine | Vollständig |
 
 ---
 
