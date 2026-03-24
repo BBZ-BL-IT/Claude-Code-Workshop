@@ -1,5 +1,7 @@
 # 🛠️ Workshop: Claude Code in der Praxis
 
+📊 [Workshop-Präsentation (PDF)](docs/workshop-presentation.pdf)
+ 
 > **Voraussetzungen:** IntelliJ IDEA installiert, aktives Claude-Abo (Pro/Team), Java 21, Maven
 
 ---
