@@ -1,6 +1,6 @@
-# 📖 Reference: Projekt initialisieren (`/init`)
+# 📖 Reference: Subagents
 
-> **Branch:** `reference/init`  
+> **Branch:** `reference/subagents`  
 > Dies ist eine **Musterlösung** — nicht in deinen `main` mergen!
 
 ---
@@ -9,56 +9,43 @@
 
 | Datei | Zweck |
 |-------|-------|
-| `CLAUDE.md` | Technisches Briefing für Claude Code inkl. Testing-Regeln |
-| `requirements.md` | Fachliche Anforderungen des Projekts |
-| `src/test/.../PersonServiceTest.java` | Unit-Tests für PersonService (Mockito, Repository gemockt) |
+| `.claude/agents/code-erklaerer-efz.md` | Agent, der Code auf Lernenden-Niveau erklärt (Deutsch) |
+| `.claude/agents/spring-mvc-code-reviewer.md` | Agent, der Code-Reviews nach Architektur-Regeln durchführt (English) |
+| `.claude/settings.local.json` | Lokale Berechtigungen (z.B. WebSearch erlauben) |
 
 ---
 
-## CLAUDE.md — Aufbau erklärt
+## Aufbau beider Agents
 
-Die `CLAUDE.md` enthält fünf Hauptbereiche:
+Beide Agents folgen dem gleichen, konsistenten Aufbau:
 
-### 1. Verweis auf Requirements
-```markdown
-> **Requirements:** Read [`requirements.md`](./requirements.md) at the start of every conversation
 ```
-So liest Claude bei **jedem** Gesprächsstart automatisch auch die fachlichen Anforderungen.
+---                              ← YAML Frontmatter (Englisch)
+name: agent-name
+description: >
+  Kurze, klare Beschreibung mit Scope-Grenzen.
+tools: Read, Grep, Glob         ← Nur Lesezugriff
+model: sonnet                    ← Schnell und günstig
+color: green                     ← Farbe im Terminal
+---
 
-### 2. Commands
-Alle wichtigen Maven-Befehle, damit Claude die App bauen, starten und testen kann.
+System-Prompt als Markdown       ← Sprache = gewünschte Ausgabesprache
+```
 
-### 3. Architecture
-Die 3-Layer-Architektur wird **explizit** beschrieben: Controller → Service → Repository.
+### Warum Frontmatter auf Englisch, System-Prompt variabel?
 
-### 4. Key Configuration
-Port, Datenbank-URL, Thymeleaf-Einstellungen.
-
-### 5. Testing (neu!)
-Klare Anweisungen für Claude:
-- Nach Code-Änderungen immer `mvn test` ausführen
-- Wenn Tests fehlen, **fragen** ob welche generiert werden sollen
-- Pattern: JUnit 5 + Mockito, Repository-Layer mocken, kein `@SpringBootTest`
-- Verweis auf `PersonServiceTest` als Referenz-Implementierung
+- **Frontmatter** ist Metadaten — Claude nutzt `description` um zu entscheiden, wann der Agent eingesetzt wird. Englisch funktioniert hier am zuverlässigsten.
+- Die **System-Prompt** bestimmt die Ausgabesprache. Der Erklärer antwortet auf Deutsch (für Lernende), der Reviewer auf Englisch (professioneller Code-Review-Stil).
+- Du kannst Claude trotzdem **auf Deutsch ansprechen** — die Antwortsprache wird durch die System-Prompt gesteuert, nicht durch deine Eingabe.
 
 ---
 
-## PersonServiceTest — Warum so?
+## settings.local.json vs settings.json
 
-Der Test zeigt das empfohlene Pattern:
-- **`@ExtendWith(MockitoExtension.class)`** statt `@SpringBootTest` — schneller, isolierter
-- **`@Mock`** auf dem Repository — wir testen nur die Service-Logik
-- **`@InjectMocks`** injiziert die Mocks automatisch
-- Jede public Methode des Service hat mindestens einen Test
-
----
-
-## Tipps für eigene Projekte
-
-1. **Halte CLAUDE.md kurz** — nur das, was universell gilt. Bloated CLAUDE.md-Dateien führen dazu, dass Claude Regeln ignoriert.
-2. **Sei spezifisch** bei Architektur-Regeln: "Controller darf nicht direkt auf Repository zugreifen" ist besser als "saubere Architektur verwenden"
-3. **Testing-Regeln in CLAUDE.md** sorgen dafür, dass Claude automatisch Tests einfordert
-4. **Sprache:** Englisch für CLAUDE.md ist empfohlen (Claude versteht es am besten)
+| Datei | Scope | In Git? |
+|-------|-------|---------|
+| `settings.json` | Projekt (alle Entwickler) | ✅ Ja |
+| `settings.local.json` | Nur du (persönlich) | ❌ Nein (in .gitignore) |
 
 ---
 
