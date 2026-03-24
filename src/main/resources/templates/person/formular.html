@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de"
+      th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title th:text="${titel}">Person</title>
+</head>
+<body>
+<th:block th:fragment="content">
+
+<div class="page-header">
+    <h1 th:text="${titel}">Person erfassen</h1>
+    <a th:href="@{/personen}" class="btn btn-outline">← Zurück zur Liste</a>
+</div>
+
+<div class="card form-card">
+    <form th:action="${person.id != null ? '/personen/' + person.id + '/bearbeiten' : '/personen/neu'}"
+          th:object="${person}"
+          method="post">
+
+        <div class="form-row">
+            <!-- Vorname -->
+            <div class="form-group" th:classappend="${#fields.hasErrors('vorname')} ? 'has-error'">
+                <label for="vorname">Vorname <span class="required">*</span></label>
+                <input type="text"
+                       id="vorname"
+                       th:field="*{vorname}"
+                       class="input"
+                       placeholder="z. B. Hans"/>
+                <span th:if="${#fields.hasErrors('vorname')}"
+                      th:errors="*{vorname}"
+                      class="error-msg"></span>
+            </div>
+
+            <!-- Nachname -->
+            <div class="form-group" th:classappend="${#fields.hasErrors('nachname')} ? 'has-error'">
+                <label for="nachname">Nachname <span class="required">*</span></label>
+                <input type="text"
+                       id="nachname"
+                       th:field="*{nachname}"
+                       class="input"
+                       placeholder="z. B. Muster"/>
+                <span th:if="${#fields.hasErrors('nachname')}"
+                      th:errors="*{nachname}"
+                      class="error-msg"></span>
+            </div>
+        </div>
+
+        <!-- E-Mail -->
+        <div class="form-group" th:classappend="${#fields.hasErrors('email')} ? 'has-error'">
+            <label for="email">E-Mail <span class="required">*</span></label>
+            <input type="email"
+                   id="email"
+                   th:field="*{email}"
+                   class="input"
+                   placeholder="hans.muster@example.ch"/>
+            <span th:if="${#fields.hasErrors('email')}"
+                  th:errors="*{email}"
+                  class="error-msg"></span>
+        </div>
+
+        <!-- Geburtsdatum -->
+        <div class="form-group" th:classappend="${#fields.hasErrors('geburtsdatum')} ? 'has-error'">
+            <label for="geburtsdatum">Geburtsdatum <span class="required">*</span></label>
+            <input type="date"
+                   id="geburtsdatum"
+                   th:field="*{geburtsdatum}"
+                   class="input"/>
+            <span th:if="${#fields.hasErrors('geburtsdatum')}"
+                  th:errors="*{geburtsdatum}"
+                  class="error-msg"></span>
+        </div>
+
+        <!-- Adresse -->
+        <div class="form-group" th:classappend="${#fields.hasErrors('adresse')} ? 'has-error'">
+            <label for="adresse">Adresse <span class="optional">(optional)</span></label>
+            <input type="text"
+                   id="adresse"
+                   th:field="*{adresse}"
+                   class="input"
+                   placeholder="Hauptstrasse 1, 4001 Basel"/>
+            <span th:if="${#fields.hasErrors('adresse')}"
+                  th:errors="*{adresse}"
+                  class="error-msg"></span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <span th:text="${person.id != null ? '💾 Speichern' : '➕ Erstellen'}">Speichern</span>
+            </button>
+            <a th:href="@{/personen}" class="btn btn-outline">Abbrechen</a>
+        </div>
+
+    </form>
+</div>
+
+</th:block>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de"
+      th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Person Detail</title>
+</head>
+<body>
+<th:block th:fragment="content">
+
+<div class="page-header">
+    <h1 th:text="${person.vorname + ' ' + person.nachname}">Max Muster</h1>
+    <div class="header-actions">
+        <a th:href="@{/personen/{id}/bearbeiten(id=${person.id})}" class="btn btn-secondary">✏️ Bearbeiten</a>
+        <a th:href="@{/personen}" class="btn btn-outline">← Zurück</a>
+    </div>
+</div>
+
+<div class="card detail-card">
+    <table class="detail-table">
+        <tr>
+            <th>ID</th>
+            <td th:text="${person.id}">1</td>
+        </tr>
+        <tr>
+            <th>Vorname</th>
+            <td th:text="${person.vorname}">Max</td>
+        </tr>
+        <tr>
+            <th>Nachname</th>
+            <td th:text="${person.nachname}">Muster</td>
+        </tr>
+        <tr>
+            <th>E-Mail</th>
+            <td>
+                <a th:href="'mailto:' + ${person.email}" th:text="${person.email}">mail@example.ch</a>
+            </td>
+        </tr>
+        <tr>
+            <th>Geburtsdatum</th>
+            <td th:text="${#temporals.format(person.geburtsdatum, 'dd. MMMM yyyy', new java.util.Locale('de'))}">
+                1. Januar 1990
+            </td>
+        </tr>
+        <tr>
+            <th>Adresse</th>
+            <td th:text="${person.adresse != null ? person.adresse : '–'}">Strasse 1</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Löschen -->
+<div class="danger-zone card">
+    <h3>⚠️ Gefahrenzone</h3>
+    <p>Diese Person und alle zugehörigen Daten werden unwiderruflich gelöscht.</p>
+    <form th:action="@{/personen/{id}/loeschen(id=${person.id})}" method="post"
+          onsubmit="return confirm('Person wirklich löschen?')">
+        <button type="submit" class="btn btn-danger">🗑 Person löschen</button>
+    </form>
+</div>
+
+</th:block>
+</body>
+</html>

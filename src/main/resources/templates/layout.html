@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de" th:fragment="layout(content)">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${pageTitle != null ? pageTitle + ' – Personenverwaltung' : 'Personenverwaltung'}">Personenverwaltung</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<header>
+    <nav>
+        <a th:href="@{/personen}" class="nav-brand">👤 Personenverwaltung</a>
+    </nav>
+</header>
+
+<main>
+    <!-- Flash-Meldungen -->
+    <div th:if="${erfolgMeldung}" class="alert alert-success" th:text="${erfolgMeldung}"></div>
+    <div th:if="${fehlerMeldung}" class="alert alert-error" th:text="${fehlerMeldung}"></div>
+
+    <!-- Seiteninhalt -->
+    <th:block th:replace="${content}"/>
+</main>
+
+<footer>
+    <p>Spring Boot + Thymeleaf CRUD Beispiel</p>
+</footer>
+
+</body>
+</html>
