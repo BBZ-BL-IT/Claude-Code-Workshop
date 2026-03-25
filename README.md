@@ -222,9 +222,10 @@ Skills sind **detaillierte Anleitungen** für wiederkehrende Aufgaben. Sie werde
 
 ### Aufgabe
 
-1. Erstelle den Ordner: `mkdir -p .claude/skills/entity-scaffold`
-2. Erstelle eine `SKILL.md` mit folgendem Aufbau — der Skill soll Claude ermöglichen, eine **komplette neue CRUD-Entity** (Model → Repository → Service → Controller → Templates → DataInitializer → Navigation) in einem Durchgang zu erstellen, konsistent mit dem bestehenden Code-Stil.
-3. Deine `SKILL.md` sollte folgende Schritte enthalten:
+1. **Code auf Englisch umstellen:** Bitte Claude, den bestehenden Code zu analysieren und alle Code-Elemente konsequent auf Englisch umzustellen — Feldnamen, Methodennamen, Template-Dateinamen, URL-Pfade, Variablen. Die Benutzeroberfläche (Labels, Meldungen) sollen Deutsch bleiben.
+2. Erstelle den Ordner: `mkdir -p .claude/skills/entity-scaffold`
+3. Erstelle eine `SKILL.md` mit folgendem Aufbau — der Skill soll Claude ermöglichen, eine **komplette neue CRUD-Entity** (Model → Repository → Service → Controller → Templates → DataInitializer → Navigation) in einem Durchgang zu erstellen, konsistent mit dem bestehenden Code-Stil.
+4. Deine `SKILL.md` sollte folgende Schritte enthalten:
 
 | Step | Was Claude tun soll |
 |------|---------------------|
