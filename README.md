@@ -185,9 +185,9 @@ Unterhalb des Frontmatters kommt die System-Prompt als Markdown. Definiere:
 
 **Schritt 3 — Testen**
 
-Frage Claude: *"Review den PersonController auf Layer-Violations"* — Claude sollte den Agent automatisch erkennen und starten.
+Frage Claude: *"Analysiere zur Entität Person, ob die 3-Schicht Architektur sauber eingehalten wurde."* — Claude sollte den Agent automatisch erkennen und starten.
 
-**Bonus:** Erstelle einen zweiten Agent `code-erklaerer-efz.md`, der Code auf Lernenden-Niveau (2. Lehrjahr) auf Deutsch erklärt.
+**Bonus:** Erstelle einen zweiten Agent `code-erklaerer-efz.md`, der Code auf Lernenden-Niveau (2. Lehrjahr) auf Deutsch erklärt. Lass dir Codeteile erklären.
 
 ### 💡 Tipps
 
