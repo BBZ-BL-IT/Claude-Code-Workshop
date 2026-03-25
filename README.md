@@ -322,6 +322,22 @@ Die Konzepte aus diesem Workshop (Projekt-Kontext, spezialisierte Agenten, wiede
 
 ---
 
+## 💡 Bonus: Security Review
+
+In der Workshop-Applikation wurde **bewusst kein Augenmerk auf Sicherheit** gelegt. Das bietet die Gelegenheit, nach dem Workshop Sicherheitsaspekte mit KI-Unterstützung zu analysieren.
+
+### Integrierte Analyse
+
+Claude Code bringt den Befehl **`/security-review`** als eingebautes Bundled Skill mit. Der Befehl nutzt einen spezialisierten Security-Prompt, der Claude anweist, die Codebasis systematisch auf gängige Schwachstellen zu prüfen — darunter SQL Injection, XSS, Authentifizierungsfehler, unsichere Datenverarbeitung, hartcodierte Secrets und Dependency-Schwachstellen. Gefundene Probleme werden mit Erklärung und Severity ausgegeben, und Claude kann anschliessend direkt Fixes implementieren.
+
+> **Voraussetzung:** Der Befehl funktioniert nur innerhalb eines Git-Repositorys. Er nutzt intern Git-Befehle wie `git status` und `git diff`, um den aktuellen Zustand des Codes und die letzten Änderungen zu erfassen. So kann Claude gezielt die relevanten Dateien analysieren, statt blind die gesamte Codebasis zu durchsuchen.
+
+### Zusätzliche Commands installieren
+
+Der Funktionsumfang von Claude Code lässt sich durch **Custom Commands** erweitern. Diese werden als Markdown-Dateien in `.claude/commands/` abgelegt und sind dann als Slash-Commands verfügbar. Ein Beispiel aus der Community ist [`/security-audit`](https://github.com/afiqiqmal/claude-security-audit) — ein erweiterter Sicherheits-Audit mit strukturiertem Report, der sich einfach ins Projekt installieren lässt.
+
+---
+
 ## 📚 Weiterführende Links
 
 - [Claude Code Dokumentation](https://code.claude.com/docs/de/overview)
