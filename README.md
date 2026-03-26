@@ -8,7 +8,7 @@
 
 ## 📋 Überblick
 
-In diesem Workshop arbeiten wir mit einer bestehenden **Spring Boot MVC Applikation** (Person-CRUD) und integrieren Schritt für Schritt Claude Code als KI-gestütztes Entwicklungswerkzeug. Das Projekt enthält bewusst Inkonsistenzen und auf Sicherheit wurde keinen Wert gelegt. Dies eröffnet Analysemöglichkeiten mit KI.
+In diesem Workshop arbeiten wir mit einer bestehenden **Spring Boot MVC Applikation** (Person-CRUD) und integrieren Schritt für Schritt Claude Code als KI-gestütztes Entwicklungswerkzeug. Das Projekt wurde selbst mit KI (und wenig Informationen) erstellt und enthält bewusst Inkonsistenzen, auf Sicherheit wurde keinen Wert gelegt. Dies eröffnet Analysemöglichkeiten mit KI.
 
 ### Was wir behandeln
 
